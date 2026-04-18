@@ -1,0 +1,65 @@
+services:
+
+  # ── MySQL Database ─────────────────────────────────────────────
+  db:
+    image: mysql:8.0
+    container_name: pathoscan_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: pathoscan
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ── FastAPI Backend ────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pathoscan_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: mysql+pymysql://${DB_USER}:${DB_PASSWORD}@db:3306/pathoscan
+      SECRET_KEY: ${SECRET_KEY}
+      TOKEN_EXPIRE_HOURS: ${TOKEN_EXPIRE_HOURS:-24}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost}
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
+      RATE_LIMIT_ANALYZE: ${RATE_LIMIT_ANALYZE:-10/minute}
+      RATE_LIMIT_LOGIN: ${RATE_LIMIT_LOGIN:-5/minute}
+      RATE_LIMIT_REGISTER: ${RATE_LIMIT_REGISTER:-3/minute}
+      RATE_LIMIT_CHAT: ${RATE_LIMIT_CHAT:-20/minute}
+    volumes:
+      # Persist the Chroma vectorstore so it survives container restarts
+      - ./backend/rag/vectorstore:/app/rag/vectorstore
+    ports:
+      - "8000:8000"
+    deploy:
+      resources:
+        limits:
+          memory: 3g
+
+  # ── React Frontend (nginx) ─────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pathoscan_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  db_data:
