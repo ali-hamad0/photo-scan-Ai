@@ -1,0 +1,114 @@
+/* ═══════════════════════════════════════════════════════════
+   Navbar.css  ·  src/components/Navbar.css
+   ═══════════════════════════════════════════════════════════ */
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--navbar-h);
+  padding: 0 32px;
+  background: color-mix(in srgb, var(--bg-primary) 88%, transparent);
+  border-bottom: 1px solid var(--bd);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-navbar);
+  flex-shrink: 0;
+  animation: slideDown 0.35s var(--ease) both;
+  transition: background var(--t-md), border-color var(--t-md);
+}
+
+/* Bottom gradient accent */
+.navbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 32px; right: 32px;
+  height: 1px;
+  background: linear-gradient(
+    90deg, transparent, var(--teal-line) 40%, var(--teal-line) 60%, transparent
+  );
+}
+
+/* ── Left ──────────────────────────────────────────────────*/
+.navbar-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.navbar-left h2 {
+  font-family: var(--f-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--tx-hi);
+  letter-spacing: -0.3px;
+  line-height: 1;
+  transition: color var(--t-md);
+}
+
+.navbar-left p {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--tx-low);
+  letter-spacing: 0.7px;
+  transition: color var(--t-md);
+}
+
+/* ── Right ─────────────────────────────────────────────────*/
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navbar-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 13px;
+  background: var(--green-soft);
+  border: 1px solid var(--green-line);
+  border-radius: var(--r-pill);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: 0.2px;
+}
+
+.navbar-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse 2.2s ease-in-out infinite;
+}
+
+.navbar-date {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  color: var(--tx-low);
+  letter-spacing: 0.4px;
+  padding: 5px 11px;
+  background: var(--bg-surface);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-pill);
+  transition: background var(--t-md), color var(--t-md);
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .navbar { padding: 0 16px 0 60px; }
+  .navbar-date { display: none; }
+}
+
+@media (max-width: 480px) {
+  .navbar-left p { display: none; }
+  .navbar-status span:not(.navbar-status-dot) {
+    display: none;
+  }
+}

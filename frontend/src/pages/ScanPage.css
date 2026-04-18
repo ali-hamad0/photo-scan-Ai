@@ -1,0 +1,415 @@
+/* ═══════════════════════════════════════════════════════════
+   ScanPage.css  ·  src/pages/ScanPage.css
+   Used by: ChestXRay · BoneXRay · BrainMRI
+   ═══════════════════════════════════════════════════════════ */
+
+/* ScanPage renders its own .page-layout wrapper */
+.page-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  transition: background var(--t-md);
+}
+
+/* ── Two-Column Layout ───────────────────────────────────── */
+.scan-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+/* ── Scan Box ────────────────────────────────────────────── */
+.scan-box {
+  background: var(--bg-card);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-lg);
+  padding: 26px;
+  box-shadow: var(--sh-card);
+  animation: slideUp 0.42s var(--ease) both;
+  transition: background var(--t-md), border-color var(--t-md);
+}
+
+.scan-box-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--tx-low);
+  margin-bottom: 18px;
+}
+
+.scan-box-title::before {
+  content: '';
+  width: 14px;
+  height: 2px;
+  background: var(--teal);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Drop Zone ───────────────────────────────────────────── */
+.drop-zone {
+  border: 2px dashed var(--bd-md);
+  border-radius: var(--r-md);
+  min-height: 230px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color var(--t-sm), background var(--t-sm);
+  background: var(--bg-surface);
+  overflow: hidden;
+  position: relative;
+}
+
+.drop-zone:hover {
+  border-color: var(--teal-line);
+  background: var(--teal-soft);
+}
+
+.drop-zone-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 28px 20px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.drop-icon {
+  font-size: 38px;
+  opacity: 0.5;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+.drop-zone-empty p {
+  font-family: var(--f-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tx-mid);
+}
+
+.drop-zone-empty span {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  color: var(--tx-low);
+  letter-spacing: 0.5px;
+}
+
+.image-preview {
+  width: 100%;
+  max-height: 340px;
+  object-fit: contain;
+  border-radius: var(--r-sm);
+  animation: fadeIn 0.3s ease;
+  display: block;
+  padding: 8px;
+}
+
+/* ── File Info ───────────────────────────────────────────── */
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--f-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--green);
+  background: var(--green-soft);
+  border: 1px solid var(--green-line);
+  border-radius: var(--r-xs);
+  padding: 8px 12px;
+  margin-top: 12px;
+  animation: slideDown 0.25s ease;
+}
+
+/* ── Scan Error ──────────────────────────────────────────── */
+.scan-error {
+  background: var(--red-soft);
+  border: 1px solid var(--red-line);
+  border-radius: var(--r-xs);
+  color: var(--red);
+  font-family: var(--f-mono);
+  font-size: 12.5px;
+  padding: 10px 14px;
+  margin-top: 12px;
+  animation: slideDown 0.25s ease;
+}
+
+/* Analyze button gets colour from JS inline style */
+.scan-left .analyze-btn {
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+}
+
+.scan-left .analyze-btn:hover:not(:disabled) {
+  filter: brightness(1.10);
+  box-shadow: 0 6px 26px rgba(0,0,0,0.50) !important;
+}
+
+/* ── Right Panel ─────────────────────────────────────────── */
+.scan-right > * {
+  animation: slideUp 0.42s var(--ease) both;
+  animation-delay: 0.06s;
+}
+
+/* ── Empty State ─────────────────────────────────────────── */
+.empty-result {
+  background: var(--bg-card);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-lg);
+  padding: 54px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  min-height: 280px;
+  box-shadow: var(--sh-card);
+  transition: background var(--t-md), border-color var(--t-md);
+}
+
+.empty-icon {
+  font-size: 44px;
+  line-height: 1;
+  opacity: 0.30;
+}
+
+.empty-icon.spin {
+  animation: spin 1.1s linear infinite;
+  opacity: 0.75;
+}
+
+.empty-result p {
+  font-family: var(--f-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--tx-mid);
+  margin-top: 4px;
+}
+
+.empty-result span {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--tx-low);
+  letter-spacing: 0.3px;
+  max-width: 230px;
+}
+
+/* ── Result Box ──────────────────────────────────────────── */
+.result-box {
+  background: var(--bg-card);
+  border: 1px solid var(--bd-md);
+  border-radius: var(--r-lg);
+  padding: 26px;
+  box-shadow: var(--sh-card);
+  position: relative;
+  overflow: hidden;
+  animation: slideUp 0.42s var(--ease) both;
+  transition: background var(--t-md), border-color var(--t-md);
+}
+
+.result-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.4;
+}
+
+.result-label {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--tx-low);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.result-confidence-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+  margin-bottom: 7px;
+  font-family: var(--f-mono);
+  font-size: 11.5px;
+  color: var(--tx-low);
+}
+
+.result-disclaimer {
+  background: rgba(245,158,11,0.07);
+  border: 1px solid rgba(245,158,11,0.22);
+  border-radius: var(--r-xs);
+  color: var(--tx-mid);
+  font-size: 11.5px;
+  padding: 11px 13px;
+  margin-top: 16px;
+  line-height: 1.65;
+}
+
+/* ── Patient Info Form ───────────────────────────────────── */
+.patient-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.patient-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.patient-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.patient-field--sm {
+  flex: 0 0 90px;
+}
+
+.patient-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--tx-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.patient-input {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs);
+  color: var(--tx-primary);
+  font-size: 13.5px;
+  padding: 8px 11px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.18s;
+}
+
+.patient-input:focus {
+  border-color: var(--accent);
+}
+
+.patient-textarea {
+  resize: vertical;
+  min-height: 70px;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .scan-layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .scan-box { padding: 18px; }
+  .drop-zone { min-height: 180px; }
+}
+/* ── Heatmap toggle ──────────────────────────────────────── */
+.scan-box-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.scan-box-title-row .scan-box-title {
+  margin-bottom: 0;
+}
+
+.heatmap-toggle {
+  display: flex;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.heatmap-tab {
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--tx-mid);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.heatmap-tab.active {
+  background: var(--bg-primary);
+  color: var(--tx-primary);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.heatmap-tab:hover:not(.active) {
+  color: var(--tx-primary);
+}
+
+/* ── Heatmap image wrapper ───────────────────────────────── */
+.heatmap-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── Colour legend ───────────────────────────────────────── */
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--tx-mid);
+}
+
+.legend-bar {
+  width: 120px;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #0000ff, #00ffff, #00ff00, #ffff00, #ff0000);
+}
+
+.legend-label {
+  font-size: 10.5px;
+  color: var(--tx-mid);
+}
+
+/* ── Heatmap hint in results panel ──────────────────────── */
+.heatmap-hint {
+  background: rgba(251, 146, 60, 0.07);
+  border: 1px solid rgba(251, 146, 60, 0.22);
+  border-radius: var(--r-xs);
+  color: var(--tx-mid);
+  font-size: 12px;
+  padding: 10px 13px;
+  margin-top: 12px;
+  line-height: 1.6;
+}
+
+.heatmap-hint strong {
+  color: var(--tx-primary);
+}

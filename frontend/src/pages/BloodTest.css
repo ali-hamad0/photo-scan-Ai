@@ -1,0 +1,408 @@
+/* ═══════════════════════════════════════════════════
+   BloodTest.css
+   ═══════════════════════════════════════════════════ */
+
+/* ── Header ─────────────────────────────────────── */
+.blood-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+  animation: slideDown 0.4s var(--ease) both;
+}
+
+.blood-header-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  background: var(--orange-soft);
+  border: 1px solid var(--orange-line);
+  flex-shrink: 0;
+}
+
+.blood-header h1 {
+  font-family: var(--f-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--tx-hi);
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+}
+
+.blood-header p {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  color: var(--tx-low);
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+/* ── Two-Column Grid ─────────────────────────────── */
+.blood-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── Form Box ────────────────────────────────────── */
+.blood-form-box {
+  background: var(--bg-card);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  box-shadow: var(--sh-card);
+  animation: slideUp 0.4s var(--ease) both;
+}
+
+.blood-form-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--tx-low);
+  margin-bottom: 20px;
+}
+
+.blood-form-title::before {
+  content: '';
+  width: 14px;
+  height: 2px;
+  background: var(--orange);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── CBC Grid ────────────────────────────────────── */
+.cbc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+  margin-bottom: 20px;
+}
+
+.cbc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.cbc-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.cbc-label {
+  font-family: var(--f-display);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tx-mid);
+}
+
+.cbc-unit {
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  color: var(--tx-low);
+}
+
+.cbc-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cbc-input {
+  width: 100%;
+  padding: 8px 32px 8px 11px;
+  background: var(--bg-input);
+  border: 1px solid var(--bd-light);
+  border-radius: var(--r-sm);
+  color: var(--tx-hi);
+  font-family: var(--f-mono);
+  font-size: 13.5px;
+  font-weight: 500;
+  outline: none;
+  transition: border-color var(--t-xs), background var(--t-xs), box-shadow var(--t-xs);
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.cbc-input::-webkit-outer-spin-button,
+.cbc-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+.cbc-input::placeholder { color: var(--tx-ghost); font-size: 10.5px; }
+
+.cbc-input:focus {
+  border-color: var(--bd-focus);
+  background: var(--bg-input-focus);
+  box-shadow: 0 0 0 3px var(--teal-soft);
+}
+
+.cbc-input.low    { border-color: var(--red-line);    color: var(--red); }
+.cbc-input.high   { border-color: var(--orange-line); color: var(--orange); }
+.cbc-input.normal { border-color: var(--green-line);  color: var(--green); }
+
+.cbc-status {
+  position: absolute;
+  right: 9px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  font-weight: 700;
+  pointer-events: none;
+  line-height: 1;
+}
+
+.cbc-status.low    { color: var(--red); }
+.cbc-status.high   { color: var(--orange); }
+.cbc-status.normal { color: var(--green); }
+
+.cbc-normal-range {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  color: var(--tx-ghost);
+}
+
+/* ── Blood Error ─────────────────────────────────── */
+.blood-error {
+  background: var(--red-soft);
+  border: 1px solid var(--red-line);
+  border-radius: var(--r-xs);
+  color: var(--red);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  padding: 9px 13px;
+  margin-bottom: 13px;
+  animation: slideDown 0.2s ease;
+}
+
+/* ── Analyze Button ──────────────────────────────── */
+.blood-analyze-btn {
+  width: 100%;
+  padding: 12px 22px;
+  border: 1px solid var(--bd-light);
+  border-radius: var(--r-md);
+  font-family: var(--f-display);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--t-sm);
+  background: var(--bg-surface);
+  color: var(--tx-low);
+  position: relative;
+  overflow: hidden;
+}
+
+.blood-analyze-btn.active {
+  background: linear-gradient(135deg, var(--orange), #e07030);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 18px var(--orange-line);
+}
+
+.blood-analyze-btn.active:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 26px rgba(232,144,78,0.45);
+  filter: brightness(1.07);
+}
+
+.blood-analyze-btn.active:active { transform: scale(0.98); }
+.blood-analyze-btn:disabled { cursor: not-allowed; opacity: 0.5; }
+
+/* ── Empty State ─────────────────────────────────── */
+.blood-empty {
+  background: var(--bg-card);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-lg);
+  padding: 50px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  text-align: center;
+  min-height: 260px;
+  box-shadow: var(--sh-card);
+  animation: fadeIn 0.3s ease;
+}
+
+.blood-empty-icon { font-size: 44px; opacity: 0.28; line-height: 1; }
+
+.blood-empty p {
+  font-family: var(--f-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tx-mid);
+  margin-top: 4px;
+}
+
+.blood-empty span {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  color: var(--tx-low);
+  max-width: 200px;
+}
+
+/* ── Result Box ──────────────────────────────────── */
+.blood-result {
+  background: var(--bg-card);
+  border: 1px solid var(--orange-line);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  box-shadow: var(--sh-card);
+  animation: slideUp 0.4s var(--ease) both;
+  position: relative;
+  overflow: hidden;
+}
+
+.blood-result::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--orange), transparent 70%);
+  opacity: 0.65;
+}
+
+.blood-result-label {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--tx-low);
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+
+.blood-result-prediction {
+  font-family: var(--f-display);
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--orange);
+  letter-spacing: -0.4px;
+  margin-bottom: 16px;
+}
+
+.blood-conf-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  color: var(--tx-low);
+  margin-bottom: 6px;
+}
+
+.blood-conf-bg {
+  height: 5px;
+  background: rgba(255,255,255,0.07);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+[data-theme="light"] .blood-conf-bg {
+  background: rgba(0,0,0,0.08);
+}
+
+.blood-conf-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--orange), #e07030);
+  border-radius: var(--r-pill);
+  transition: width 1s var(--ease);
+}
+
+/* ── CBC Flags ───────────────────────────────────── */
+.blood-flags-title {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--tx-low);
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  margin-bottom: 9px;
+}
+
+.blood-flags {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 16px;
+}
+
+.blood-flag-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 11px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xs);
+  transition: border-color var(--t-xs);
+}
+
+[data-theme="light"] .blood-flag-row {
+  background: rgba(0,0,0,0.02);
+}
+
+.blood-flag-row:hover { border-color: var(--bd-light); }
+
+.blood-flag-name {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--tx-mid);
+}
+
+.blood-flag-value {
+  font-family: var(--f-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.blood-flag-value.low    { color: var(--red); }
+.blood-flag-value.high   { color: var(--orange); }
+.blood-flag-value.normal { color: var(--green); }
+
+/* ── Explanation ─────────────────────────────────── */
+.blood-explanation {
+  font-size: 13px;
+  color: var(--tx-mid);
+  line-height: 1.75;
+  padding: 13px 15px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-sm);
+  margin-bottom: 13px;
+}
+
+[data-theme="light"] .blood-explanation {
+  background: rgba(0,0,0,0.02);
+}
+
+/* ── Disclaimer ──────────────────────────────────── */
+.blood-disclaimer {
+  background: var(--orange-soft);
+  border: 1px solid var(--orange-line);
+  border-radius: var(--r-xs);
+  color: var(--tx-mid);
+  font-size: 11.5px;
+  padding: 10px 13px;
+  line-height: 1.6;
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 960px) {
+  .blood-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 540px) {
+  .cbc-grid { grid-template-columns: 1fr; }
+}

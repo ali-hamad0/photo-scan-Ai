@@ -1,0 +1,337 @@
+/* ═══════════════════════════════════════════════════════════
+   Login.css  ·  src/pages/Login.css
+   ═══════════════════════════════════════════════════════════ */
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg-base);
+  position: relative;
+  overflow: hidden;
+  transition: background var(--t-md);
+}
+
+/* Grid texture */
+.login-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(6,182,212,0.10) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+/* Atmospheric glow */
+.login-container::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 500px;
+  background: radial-gradient(ellipse, rgba(6,182,212,0.09) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+/* ── Card ────────────────────────────────────────────────── */
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-card);
+  border: 1px solid var(--bd-md);
+  border-radius: var(--r-2xl);
+  padding: 44px 42px;
+  box-shadow: var(--sh-lg), 0 0 80px rgba(6,182,212,0.07);
+  animation: slideUp 0.55s var(--ease) both;
+  transition: background var(--t-md), border-color var(--t-md);
+}
+
+/* Top teal shimmer */
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 15%; right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--teal-line), transparent);
+}
+
+/* ── Back Button ─────────────────────────────────────────── */
+.auth-back-btn {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xs);
+  color: var(--tx-low);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background var(--t-xs), color var(--t-xs), border-color var(--t-xs);
+}
+
+.auth-back-btn:hover {
+  background: var(--teal-soft);
+  border-color: var(--teal-line);
+  color: var(--teal);
+}
+
+/* ── Brand block ─────────────────────────────────────────── */
+.auth-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.auth-brand-icon {
+  margin-bottom: 10px;
+  opacity: 0.9;
+}
+
+/* ── Logo ────────────────────────────────────────────────── */
+.login-logo {
+  font-family: var(--f-display);
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--tx-hi);
+  text-align: center;
+  letter-spacing: -0.4px;
+  margin-bottom: 4px;
+}
+
+/* ── Title ───────────────────────────────────────────────── */
+.login-title {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  color: var(--tx-low);
+  text-align: center;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin-bottom: 0;
+}
+
+/* ── Error banner ────────────────────────────────────────── */
+.login-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--red-soft);
+  border: 1px solid var(--red-line);
+  border-radius: var(--r-sm);
+  color: var(--red);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  animation: slideDown 0.28s ease;
+}
+
+/* ── Field group ─────────────────────────────────────────── */
+.auth-field {
+  margin-bottom: 14px;
+}
+
+.auth-label {
+  display: block;
+  font-family: var(--f-body);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--tx-mid);
+  margin-bottom: 6px;
+  letter-spacing: 0.2px;
+}
+
+.auth-label-hint {
+  font-weight: 400;
+  color: var(--tx-low);
+  font-size: 11.5px;
+}
+
+.auth-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-input-icon {
+  position: absolute;
+  left: 13px;
+  color: var(--tx-low);
+  pointer-events: none;
+  flex-shrink: 0;
+  transition: color var(--t-xs);
+}
+
+.auth-input-wrap:focus-within .auth-input-icon {
+  color: var(--teal);
+}
+
+.auth-input-wrap.has-error .auth-input-icon {
+  color: var(--red);
+}
+
+.auth-field-error {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--red);
+  margin-top: 5px;
+  padding-left: 2px;
+}
+
+/* ── Inputs ──────────────────────────────────────────────── */
+.login-input {
+  width: 100%;
+  display: block;
+  padding: 11px 42px 11px 38px;
+  background: var(--bg-input);
+  border: 1px solid var(--bd-md);
+  border-radius: var(--r-sm);
+  color: var(--tx-hi);
+  font-family: var(--f-body);
+  font-size: 14px;
+  outline: none;
+  transition: border-color var(--t-xs), background var(--t-xs), box-shadow var(--t-xs);
+}
+
+.login-input::placeholder { color: var(--tx-ghost); }
+
+.login-input:focus {
+  border-color: var(--bd-focus);
+  background: var(--bg-input-focus);
+  box-shadow: 0 0 0 3px rgba(6,182,212,0.09);
+}
+
+.auth-input-wrap.has-error .login-input {
+  border-color: var(--red-line);
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.08);
+}
+
+/* ── Eye toggle button ───────────────────────────────────── */
+.auth-eye-btn {
+  position: absolute;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--tx-low);
+  cursor: pointer;
+  border-radius: var(--r-xs);
+  transition: color var(--t-xs), background var(--t-xs);
+}
+
+.auth-eye-btn:hover {
+  color: var(--tx-mid);
+  background: var(--bg-surface);
+}
+
+/* ── Button ──────────────────────────────────────────────── */
+.login-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 24px;
+  background: linear-gradient(135deg, var(--teal), var(--teal-lo));
+  border: none;
+  border-radius: var(--r-sm);
+  color: #fff;
+  font-family: var(--f-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  margin-top: 6px;
+  box-shadow: 0 4px 22px rgba(6,182,212,0.34);
+  transition: transform var(--t-xs), box-shadow var(--t-xs), filter var(--t-xs);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 55%);
+  opacity: 0;
+  transition: opacity var(--t-xs);
+}
+
+.login-button:hover:not(:disabled)::before { opacity: 1; }
+.login-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(6,182,212,0.48);
+}
+.login-button:active:not(:disabled) { transform: scale(0.99); }
+.login-button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ── Spinner ─────────────────────────────────────────────── */
+.auth-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Divider ─────────────────────────────────────────────── */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0 4px;
+  color: var(--tx-ghost);
+  font-size: 11px;
+  font-family: var(--f-mono);
+  letter-spacing: 0.5px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--bd);
+}
+
+/* ── Link ────────────────────────────────────────────────── */
+.login-link {
+  font-size: 13px;
+  color: var(--tx-low);
+  text-align: center;
+  margin-top: 0;
+}
+
+.login-link a {
+  color: var(--teal);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color var(--t-xs);
+}
+
+.login-link a:hover { color: var(--teal-hi); }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .login-card { padding: 32px 22px; border-radius: var(--r-xl); }
+}

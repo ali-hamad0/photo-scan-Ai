@@ -1,0 +1,299 @@
+/* ═══════════════════════════════════════════════════════════
+   Patients.css  ·  src/pages/Patients.css
+   ═══════════════════════════════════════════════════════════ */
+
+.patients-search-row {
+  margin-bottom: 20px;
+}
+
+/* ── Patient List ────────────────────────────────────────── */
+.patients-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Patient Card ────────────────────────────────────────── */
+.patient-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s, transform 0.15s;
+}
+
+.patient-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-secondary);
+  transform: translateX(3px);
+}
+
+.patient-card-avatar {
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  border-radius: var(--r-sm);
+  background: linear-gradient(135deg, rgba(167,139,250,0.18), rgba(6,182,212,0.12));
+  border: 1px solid rgba(167,139,250,0.3);
+  color: #A78BFA;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.patient-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.patient-card-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--tx-primary);
+  margin-bottom: 3px;
+}
+
+.patient-card-meta {
+  font-size: 12.5px;
+  color: var(--tx-mid);
+  margin-bottom: 8px;
+}
+
+.patient-card-types {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.patient-type-badge {
+  font-size: 13px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  border: 1px solid;
+}
+
+.patient-card-stats {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.patient-stat-num {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--tx-primary);
+  line-height: 1;
+}
+
+.patient-stat-label {
+  font-size: 11px;
+  color: var(--tx-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.patient-stat-date {
+  font-size: 11.5px;
+  color: var(--tx-mid);
+}
+
+/* ── Patient Modal ───────────────────────────────────────── */
+.pt-modal-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 28px 30px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 88vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+}
+
+.pt-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.pt-modal-avatar {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  border-radius: var(--r-sm);
+  background: linear-gradient(135deg, rgba(167,139,250,0.2), rgba(6,182,212,0.14));
+  border: 1px solid rgba(167,139,250,0.35);
+  color: #A78BFA;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pt-modal-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--tx-primary);
+  margin-bottom: 4px;
+}
+
+.pt-modal-meta {
+  font-size: 13px;
+  color: var(--tx-mid);
+}
+
+.pt-modal-badge {
+  margin-left: auto;
+  background: rgba(167,139,250,0.12);
+  border: 1px solid rgba(167,139,250,0.25);
+  color: #A78BFA;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.pt-modal-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tx-mid);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Scan rows inside modal ──────────────────────────────── */
+.pt-scans-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pt-scan-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs);
+  padding: 12px 14px;
+}
+
+.pt-scan-chip {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.pt-scan-middle {
+  flex: 1;
+  min-width: 0;
+}
+
+.pt-scan-prediction {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tx-primary);
+}
+
+.pt-scan-date {
+  font-size: 11.5px;
+  color: var(--tx-mid);
+  margin-top: 2px;
+}
+
+.pt-scan-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.pt-scan-conf-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pt-scan-conf-bar-bg {
+  width: 70px;
+  height: 5px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pt-scan-conf-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.pt-scan-conf-val {
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 36px;
+  text-align: right;
+}
+
+.pt-scan-pdf-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs);
+  color: var(--tx-mid);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.pt-scan-pdf-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(6,182,212,0.06);
+}
+
+/* ── PDF download button in History modal ────────────────── */
+.report-download-btn {
+  width: 100%;
+  margin-top: 18px;
+  padding: 10px;
+  background: rgba(6,182,212,0.08);
+  border: 1px solid rgba(6,182,212,0.25);
+  border-radius: var(--r-xs);
+  color: var(--accent);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.report-download-btn:hover {
+  background: rgba(6,182,212,0.15);
+  border-color: rgba(6,182,212,0.45);
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .patient-card { flex-wrap: wrap; }
+  .patient-card-stats { width: 100%; text-align: left; }
+  .pt-scan-right { flex-direction: column; align-items: flex-end; }
+}

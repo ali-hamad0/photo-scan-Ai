@@ -1,0 +1,567 @@
+/* ═══════════════════════════════════════════════════════════
+   History.css  ·  src/pages/History.css
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Filters Bar ─────────────────────────────────────────── */
+.history-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+  animation: slideDown 0.4s var(--ease) both;
+  animation-delay: 0.06s;
+}
+
+.history-search {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 16px;
+  background: var(--bg-input);
+  border: 1px solid var(--bd-md);
+  border-radius: var(--r-md);
+  color: var(--tx-hi);
+  font-family: var(--f-body);
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color var(--t-xs), background var(--t-xs), box-shadow var(--t-xs);
+}
+
+.history-search::placeholder { color: var(--tx-ghost); }
+
+.history-search:focus {
+  border-color: var(--bd-focus);
+  background: var(--bg-input-focus);
+  box-shadow: 0 0 0 3px rgba(6,182,212,0.09);
+}
+
+.history-filter-btns {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 8px 14px;
+  border-radius: var(--r-pill);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  border: 1px solid var(--bd-md);
+  background: var(--bg-surface);
+  color: var(--tx-mid);
+  transition: background var(--t-xs), border-color var(--t-xs), color var(--t-xs);
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  background: var(--teal-soft);
+  border-color: var(--teal-line);
+  color: var(--teal);
+}
+
+.filter-btn.active {
+  background: var(--teal-soft);
+  border-color: var(--teal-line);
+  color: var(--teal);
+  box-shadow: 0 0 0 1px var(--teal-line);
+}
+
+/* ── Table Wrapper ───────────────────────────────────────── */
+.history-table-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--sh-card);
+  animation: slideUp 0.45s var(--ease) both;
+  animation-delay: 0.10s;
+  transition: background var(--t-md), border-color var(--t-md);
+}
+
+/* ── Empty State ─────────────────────────────────────────── */
+.history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 60px 24px;
+  text-align: center;
+}
+
+.history-empty-icon {
+  font-size: 44px;
+  opacity: 0.3;
+  margin-bottom: 4px;
+}
+
+.history-empty p {
+  font-family: var(--f-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--tx-mid);
+}
+
+.history-empty span {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--tx-low);
+}
+
+/* ── Table ───────────────────────────────────────────────── */
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table thead {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--bd-md);
+}
+
+.history-table th {
+  padding: 13px 18px;
+  text-align: left;
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--tx-low);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color var(--t-md);
+}
+
+.history-table th:first-child { padding-left: 24px; }
+.history-table th:last-child  { padding-right: 24px; }
+
+.history-table tbody tr {
+  border-bottom: 1px solid var(--bd);
+  transition: background var(--t-xs);
+}
+
+.history-table tbody tr:last-child { border-bottom: none; }
+
+.history-table tbody tr:hover {
+  background: color-mix(in srgb, var(--teal) 4%, transparent);
+}
+
+.history-table td {
+  padding: 14px 18px;
+  font-size: 13.5px;
+  color: var(--tx-hi);
+  vertical-align: middle;
+  transition: color var(--t-md);
+}
+
+.history-table td:first-child { padding-left: 24px; }
+.history-table td:last-child  { padding-right: 24px; }
+
+/* ── ID Cell ─────────────────────────────────────────────── */
+.history-id {
+  font-family: var(--f-mono);
+  font-size: 11px !important;
+  color: var(--tx-low) !important;
+  letter-spacing: 0.3px;
+}
+
+/* ── Scan Chip ───────────────────────────────────────────── */
+.history-scan-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* ── Result Cell ─────────────────────────────────────────── */
+.history-result {
+  font-family: var(--f-display) !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+}
+
+/* ── Confidence Bar ──────────────────────────────────────── */
+.history-conf-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.history-conf-bar-bg {
+  flex: 1;
+  height: 5px;
+  background: var(--bd);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  min-width: 80px;
+}
+
+.history-conf-bar-fill {
+  height: 100%;
+  border-radius: var(--r-pill);
+  transition: width 0.8s var(--ease);
+}
+
+.history-conf-val {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  min-width: 36px;
+  text-align: right;
+}
+
+/* ── Date Cell ───────────────────────────────────────────── */
+.history-date {
+  font-family: var(--f-mono) !important;
+  font-size: 11px !important;
+  color: var(--tx-low) !important;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .history-filters { flex-direction: column; align-items: stretch; }
+  .history-search { min-width: unset; }
+  .history-filter-btns { justify-content: flex-start; }
+
+  /* Hide explanation col on small screens */
+  .history-table th:nth-child(4),
+  .history-table td:nth-child(4) { display: none; }
+}
+
+@media (max-width: 600px) {
+  .history-table th:nth-child(5),
+  .history-table td:nth-child(5) { display: none; }
+
+  .history-table th,
+  .history-table td {
+    padding: 11px 12px;
+  }
+}
+/* ── Clickable rows ──────────────────────────────────────── */
+.history-row-clickable {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.history-row-clickable:hover {
+  background: var(--bg-secondary);
+}
+
+.history-patient-badge {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--tx-primary);
+}
+.history-no-patient {
+  color: var(--tx-muted);
+  font-size: 13px;
+}
+
+/* ── Modal ───────────────────────────────────────────────── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(3px);
+}
+
+.modal-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 28px 30px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--tx-mid);
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+}
+.modal-close:hover { color: var(--tx-primary); }
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.modal-scan-chip {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
+.modal-date {
+  font-size: 12px;
+  color: var(--tx-mid);
+}
+
+.modal-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tx-mid);
+  margin: 18px 0 8px;
+}
+
+.modal-info-grid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.modal-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 90px;
+}
+
+.modal-info-label {
+  font-size: 11px;
+  color: var(--tx-mid);
+}
+
+.modal-info-value {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--tx-primary);
+}
+
+.modal-notes {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs);
+  padding: 10px 13px;
+  font-size: 13.5px;
+  color: var(--tx-primary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.modal-prediction {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.modal-conf-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--tx-mid);
+  margin-bottom: 6px;
+}
+
+.modal-conf-bar-bg {
+  height: 6px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.modal-conf-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.modal-explanation {
+  font-size: 13px;
+  color: var(--tx-mid);
+  line-height: 1.65;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  margin-top: 4px;
+}
+
+/* ── Actions column ──────────────────────────────────────── */
+.history-actions-cell {
+  white-space: nowrap;
+}
+
+.row-btn {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 4px 7px;
+  line-height: 1;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.row-btn--edit:hover {
+  background: rgba(99,201,214,0.12);
+  border-color: rgba(99,201,214,0.3);
+}
+
+.row-btn--delete:hover {
+  background: rgba(248,113,113,0.12);
+  border-color: rgba(248,113,113,0.3);
+}
+
+/* ── Edit Modal form ─────────────────────────────────────── */
+.modal-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--tx-primary);
+  margin-bottom: 18px;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.edit-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.edit-field--sm {
+  flex: 0 0 90px;
+}
+
+.edit-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--tx-mid);
+}
+
+.edit-input {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs);
+  color: var(--tx-primary);
+  font-size: 13.5px;
+  padding: 8px 11px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.18s;
+}
+
+.edit-input:focus {
+  border-color: var(--accent);
+}
+
+.edit-textarea {
+  resize: vertical;
+  min-height: 70px;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.edit-btn-cancel {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs);
+  color: var(--tx-mid);
+  font-size: 13.5px;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.edit-btn-cancel:hover { border-color: var(--tx-mid); }
+
+.edit-btn-save {
+  background: var(--accent);
+  border: none;
+  border-radius: var(--r-xs);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 8px 20px;
+  cursor: pointer;
+  opacity: 0.92;
+  transition: opacity 0.15s;
+}
+.edit-btn-save:hover { opacity: 1; }
+
+/* ── Delete Confirm Modal ────────────────────────────────── */
+.modal-card--sm {
+  max-width: 340px;
+  text-align: center;
+}
+
+.delete-icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.delete-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--tx-primary);
+  margin-bottom: 6px;
+}
+
+.delete-subtitle {
+  font-size: 13px;
+  color: var(--tx-mid);
+  margin-bottom: 22px;
+}
+
+.edit-btn-delete {
+  background: #ef4444;
+  border: none;
+  border-radius: var(--r-xs);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 8px 20px;
+  cursor: pointer;
+  opacity: 0.9;
+  transition: opacity 0.15s;
+}
+.edit-btn-delete:hover { opacity: 1; }

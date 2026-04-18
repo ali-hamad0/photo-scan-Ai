@@ -1,0 +1,352 @@
+/* ═══════════════════════════════════════════════════════════
+   global.css  ·  Reset · Shell · Utilities · Animations
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Reset ────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--f-body);
+  background: var(--bg-base);
+  color: var(--tx-hi);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background var(--t-md), color var(--t-md);
+}
+
+/* Atmospheric background layer */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 100% 55% at 50% -5%,
+      rgba(6,182,212,0.065) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 45% at 95% 90%,
+      rgba(139,92,246,0.04) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 35% at 3%  55%,
+      rgba(16,185,129,0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity var(--t-md);
+}
+
+[data-theme="light"] body::before {
+  opacity: 0.5;
+}
+
+/* Subtle dot grid */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(6,182,212,0.12) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-theme="light"] body::after {
+  background-image: radial-gradient(circle, rgba(6,182,212,0.10) 1px, transparent 1px);
+}
+
+/* ── App Shell ───────────────────────────────────────────── */
+.app-layout {
+  display: block; /* Changed to block because sidebar is position: fixed */
+  min-height: 100vh;
+  position: relative;
+}
+
+/*
+  .app-main shifts right based on sidebar state.
+  We use margin-left to create space for the fixed sidebar.
+*/
+.app-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 100vh;
+  margin-left: var(--sidebar-w);
+  width: calc(100% - var(--sidebar-w));
+  transition: margin-left 0.3s ease, width 0.3s ease, background var(--t-md);
+  position: relative;
+  z-index: var(--z-base);
+  background: var(--bg-primary);
+}
+
+/* Sidebar collapsed → shrink main margin and expand width */
+.app-layout:has(.sidebar.closed) .app-main {
+  margin-left: var(--sidebar-mini);
+  width: calc(100% - var(--sidebar-mini));
+}
+
+/* ── Page Content ────────────────────────────────────────── */
+.page-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.page-content {
+  flex: 1;
+  padding: 30px 36px 56px;
+  position: relative;
+  z-index: var(--z-base);
+  max-width: 1440px;
+  width: 100%;
+}
+
+/* ── Page Header ─────────────────────────────────────────── */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  animation: slideDown 0.45s var(--ease) both;
+}
+
+.page-header-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.page-title {
+  font-family: var(--f-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--tx-hi);
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--tx-low);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* ── Section Title ───────────────────────────────────────── */
+.section-title {
+  font-family: var(--f-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--tx-mid);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.section-title span {
+  font-family: var(--f-body);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--tx-low);
+}
+
+/* ── Confidence Bar ──────────────────────────────────────── */
+.confidence-bar-bg {
+  height: 5px;
+  background: var(--bd);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.confidence-bar-fill {
+  height: 100%;
+  border-radius: var(--r-pill);
+  transition: width 0.9s var(--ease);
+}
+
+/* ── Shared Analyze Button ───────────────────────────────── */
+.analyze-btn {
+  width: 100%;
+  padding: 13px 24px;
+  border: none;
+  border-radius: var(--r-md);
+  font-family: var(--f-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: transform var(--t-xs), box-shadow var(--t-xs), filter var(--t-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.analyze-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, transparent 55%);
+  opacity: 0;
+  transition: opacity var(--t-xs);
+}
+
+.analyze-btn:hover:not(:disabled)::before { opacity: 1; }
+.analyze-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow: var(--sh-md);
+}
+.analyze-btn:active:not(:disabled) { transform: scale(0.985); }
+.analyze-btn:disabled {
+  background: var(--bg-surface) !important;
+  color: var(--tx-low) !important;
+  cursor: not-allowed;
+  box-shadow: none;
+  filter: none;
+}
+
+/* ── Spinner ─────────────────────────────────────────────── */
+.spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255,255,255,0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* ── Error Block ─────────────────────────────────────────── */
+.error-msg {
+  background: var(--red-soft);
+  border: 1px solid var(--red-line);
+  border-radius: var(--r-sm);
+  color: var(--red);
+  font-family: var(--f-mono);
+  font-size: 12.5px;
+  padding: 10px 14px;
+  margin-top: 12px;
+  animation: slideDown 0.25s ease;
+}
+
+/* ── Result shared ───────────────────────────────────────── */
+.result-prediction {
+  font-family: var(--f-display);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.result-explanation {
+  font-size: 13.5px;
+  color: var(--tx-mid);
+  line-height: 1.78;
+  padding: 16px;
+  background: color-mix(in srgb, var(--bg-surface) 60%, transparent);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--bd);
+  margin-top: 16px;
+}
+
+.disclaimer {
+  background: rgba(245,158,11,0.07);
+  border: 1px solid rgba(245,158,11,0.22);
+  border-radius: var(--r-sm);
+  color: var(--tx-mid);
+  font-size: 12px;
+  padding: 11px 14px;
+  margin-top: 14px;
+  line-height: 1.65;
+}
+
+.disclaimer strong { color: var(--orange); }
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--bd-md); border-radius: var(--r-pill); }
+::-webkit-scrollbar-thumb:hover { background: var(--bd-hi); }
+
+/* ── Keyframes ───────────────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.82); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(6,182,212,0.20); }
+  50%       { box-shadow: 0 0 24px rgba(6,182,212,0.55); }
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+
+@keyframes dotBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30%            { transform: translateY(-8px); }
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .page-content { padding: 26px 24px 48px; }
+}
+
+@media (max-width: 768px) {
+  .app-main { 
+    margin-left: 0 !important; 
+    width: 100% !important;
+  }
+  .page-content { padding: 20px 16px 44px; }
+  .page-title { font-size: 21px; }
+}
+
+@media (max-width: 480px) {
+  .page-content { padding: 16px 12px 40px; }
+}
