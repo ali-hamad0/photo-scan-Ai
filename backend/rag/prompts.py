@@ -1,20 +1,7 @@
 from langchain_core.prompts import PromptTemplate
 
-CONDENSE_TEMPLATE = """Given the conversation history and a follow-up question,
-rewrite the follow-up as a fully self-contained standalone question.
-Do not answer it — only rewrite it.
-
-Conversation History:
-{chat_history}
-
-Follow-up Question: {question}
-
-Standalone Question:"""
-
-ANSWER_TEMPLATE = """You are MedBot, a knowledgeable and empathetic AI medical assistant for PathoScan AI.
-Your role is to help users — mostly doctors and clinicians — understand blood test results, CBC values, lab findings, medical scan results, and symptoms.
-
-━━━ CBC REFERENCE RANGES (always use these to assess values) ━━━
+# CBC reference table kept as a constant — injected only for lab questions
+CBC_REFERENCE = """━━━ CBC REFERENCE RANGES (always use these to assess values) ━━━
 WBC (White Blood Cells):     4.5 – 11.0  K/µL
 RBC (Red Blood Cells):       M: 4.7–6.1  |  F: 4.2–5.4  (×10⁶/µL)
 Hemoglobin:                  M: 13.5–17.5 | F: 12.0–15.5 (g/dL)
@@ -27,8 +14,41 @@ Neutrophils:                 1.8 – 7.7    K/µL  (40–70%)
 Lymphocytes:                 1.0 – 4.8    K/µL  (20–40%)
 Monocytes:                   0.2 – 1.0    K/µL  (2–8%)
 Eosinophils:                 0.0 – 0.45   K/µL  (1–4%)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"""
 
+# Keywords that indicate a lab/diagnostic question warranting the reference table
+_LAB_KEYWORDS = frozenset({
+    "wbc", "rbc", "hemoglobin", "hematocrit", "mcv", "mch", "mchc",
+    "platelet", "neutrophil", "lymphocyte", "monocyte", "eosinophil",
+    "cbc", "blood", "count", "anemia", "leukemia", "lab", "result",
+    "test", "level", "value", "range", "normal", "abnormal", "low", "high",
+    "diagnosis", "diagnose", "scan", "xray", "x-ray", "mri", "ct",
+    "pneumonia", "fracture", "tumor", "glioma", "meningioma", "pituitary",
+    "finding", "symptom", "disease", "infection", "inflammation",
+})
+
+
+def is_lab_question(question: str) -> bool:
+    """Return True if the question is about lab values or diagnostic findings."""
+    words = question.lower().split()
+    return bool(_LAB_KEYWORDS & set(words))
+
+
+CONDENSE_TEMPLATE = """Given the conversation history and a follow-up question,
+rewrite the follow-up as a fully self-contained standalone question.
+Do not answer it — only rewrite it.
+
+Conversation History:
+{chat_history}
+
+Follow-up Question: {question}
+
+Standalone Question:"""
+
+_BASE_SYSTEM = """You are MedBot, a knowledgeable and empathetic AI medical assistant for PathoScan AI.
+Your role is to help users — mostly doctors and clinicians — understand blood test results, CBC values, lab findings, medical scan results, and symptoms.
+
+{cbc_section}
 URGENCY RULE — if any value is critically abnormal, start your response with:
 ⚠️ **Urgent:** [one sentence on why this needs prompt attention]
 
@@ -74,5 +94,17 @@ Medical Context from Knowledge Base:
 
 User Question: {question}"""
 
+# Two compiled prompt templates — one with CBC table, one without
+ANSWER_PROMPT_LAB = PromptTemplate.from_template(
+    _BASE_SYSTEM.replace("{cbc_section}", CBC_REFERENCE + "\n\n")
+)
+ANSWER_PROMPT_GENERAL = PromptTemplate.from_template(
+    _BASE_SYSTEM.replace("{cbc_section}", "")
+)
+
 CONDENSE_PROMPT = PromptTemplate.from_template(CONDENSE_TEMPLATE)
-ANSWER_PROMPT   = PromptTemplate.from_template(ANSWER_TEMPLATE)
+
+
+def get_answer_prompt(question: str) -> PromptTemplate:
+    """Return the lab-aware prompt for diagnostic questions, lightweight otherwise."""
+    return ANSWER_PROMPT_LAB if is_lab_question(question) else ANSWER_PROMPT_GENERAL

@@ -1,18 +1,24 @@
+import logging
+from functools import lru_cache
+
 from rag.services.vectorstore import get_vectorstore
 
-_retriever = None
+logger = logging.getLogger(__name__)
 
 
+@lru_cache(maxsize=1)
 def get_retriever():
-    global _retriever
-    if _retriever is None:
-        print("Initialising RAG retrieval stack...")
-        _retriever = get_vectorstore().as_retriever(
-            search_type="mmr",
-            search_kwargs={"k": 10, "fetch_k": 25},
-        )
-        print("Retrieval stack ready (MMR)")
-    return _retriever
+    logger.info("Initialising RAG retrieval stack...")
+    retriever = get_vectorstore().as_retriever(
+        search_type="mmr",
+        search_kwargs={
+            "k": 6,
+            "fetch_k": 20,
+            "lambda_mult": 0.7,
+        },
+    )
+    logger.info("Retrieval stack ready (MMR, k=6)")
+    return retriever
 
 
 def retrieve(query: str) -> list:

@@ -1,7 +1,90 @@
+import base64
+import io
+import logging
+
 import numpy as np
 from PIL import Image
-import io
-import base64
+
+logger = logging.getLogger(__name__)
+
+# Minimum confidence required to accept a result — below this the image is
+# likely not the correct scan type for the model.
+MIN_CONFIDENCE = {
+    "chest_xray": 0.80,
+    "bone_xray":  0.80,
+    "brain_mri":  0.60,
+}
+
+# Maximum allowed color variance between R/G/B channels.
+# Real medical scans (X-ray, MRI) are grayscale — colorful images are rejected.
+_MAX_COLOR_VARIANCE = 15.0
+
+
+_SCAN_CLASSIFIER = None
+_SCAN_CLASS_NAMES = ["chest_xray", "bone_xray", "brain_mri"]
+
+
+def _load_scan_classifier():
+    global _SCAN_CLASSIFIER
+    if _SCAN_CLASSIFIER is not None:
+        return _SCAN_CLASSIFIER
+    import tensorflow as tf
+    model_path = "models/scan_classifier.h5"
+    try:
+        _SCAN_CLASSIFIER = tf.keras.models.load_model(model_path)
+        logger.info("Scan classifier loaded from %s", model_path)
+    except Exception as e:
+        logger.warning("Scan classifier not found — skipping scan-type gate: %s", e)
+    return _SCAN_CLASSIFIER
+
+
+def validate_scan_image(file_bytes: bytes, scan_type: str):
+    """
+    Returns (True, None) if the image is plausibly the correct scan type,
+    or (False, reason_string) if it should be rejected.
+
+    Layer 1 — grayscale check: rejects color photos immediately.
+    Layer 2 — scan-type classifier: rejects wrong-modality grayscale images
+              (e.g. bone X-ray fed to chest model). Skipped gracefully if
+              models/scan_classifier.h5 has not been trained yet.
+    """
+    try:
+        img = Image.open(io.BytesIO(file_bytes)).convert("RGB")
+        arr = np.array(img, dtype=np.float32)
+    except Exception:
+        return False, "Could not read the uploaded file as an image."
+
+    # Layer 1 — color photo rejection
+    r, g, b = arr[:, :, 0], arr[:, :, 1], arr[:, :, 2]
+    color_variance = float(
+        np.mean([np.std(r - g), np.std(r - b), np.std(g - b)])
+    )
+    if color_variance > _MAX_COLOR_VARIANCE:
+        return False, (
+            f"The uploaded image appears to be a color photograph, not a "
+            f"medical scan. {scan_type.replace('_', ' ').title()} images must "
+            f"be grayscale."
+        )
+
+    # Layer 2 — scan-type classifier gate
+    classifier = _load_scan_classifier()
+    if classifier is not None:
+        import tensorflow as tf
+        resized = img.resize((224, 224))
+        x = np.array(resized, dtype=np.float32) / 255.0
+        x = np.expand_dims(x, axis=0)
+        probs = classifier.predict(x, verbose=0)[0]
+        predicted_type = _SCAN_CLASS_NAMES[int(np.argmax(probs))]
+        classifier_confidence = float(np.max(probs))
+        if predicted_type != scan_type:
+            return False, (
+                f"This image looks like a {predicted_type.replace('_', ' ')} "
+                f"({classifier_confidence * 100:.0f}% confidence), not a "
+                f"{scan_type.replace('_', ' ')}. Please upload the correct scan type."
+            )
+
+    return True, None
+
 
 def preprocess_image(file_bytes, model_type="resnet"):
     """
@@ -106,7 +189,7 @@ def generate_gradcam(model, img_array, class_idx, original_bytes):
         return base64.b64encode(buf.getvalue()).decode('utf-8')
 
     except Exception as e:
-        print(f"⚠️  Grad-CAM failed: {e}")
+        logger.warning("Grad-CAM failed: %s", e)
         return None
 
 

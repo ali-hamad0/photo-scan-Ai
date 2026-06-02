@@ -1,7 +1,10 @@
 import datetime
+import logging
 
 from sqlalchemy import Column, Enum, Float, ForeignKey, Integer, String, Text, TIMESTAMP, create_engine
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+
+logger = logging.getLogger(__name__)
 
 from config import DATABASE_URL
 
@@ -113,7 +116,7 @@ class ChatMessage(Base):
 
 def create_tables():
     Base.metadata.create_all(engine)
-    print("Tables created successfully")
+    logger.info("Tables created successfully")
 
 
 def get_db():

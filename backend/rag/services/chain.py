@@ -4,7 +4,7 @@ from typing import AsyncGenerator
 
 from langchain_core.output_parsers import StrOutputParser
 
-from rag.prompts import ANSWER_PROMPT, CONDENSE_PROMPT
+from rag.prompts import CONDENSE_PROMPT, get_answer_prompt
 from rag.services.llm import get_llm
 from rag.services.memory import format_history, get_history, update_history
 from rag.services.retriever import extract_sources, format_docs, retrieve
@@ -17,10 +17,23 @@ _FALLBACK = (
     "qualified healthcare professional for accurate guidance."
 )
 
+# Pronouns/references that make a follow-up ambiguous without prior context
+_CONTEXT_REFS = frozenset({
+    "it", "that", "this", "they", "those", "these", "them",
+    "he", "she", "its", "their", "his", "her",
+})
+
+
+def _needs_condensing(question: str) -> bool:
+    """Return True only when the question contains a pronoun/reference that
+    requires prior context to resolve into a standalone question."""
+    words = set(question.lower().split())
+    return bool(_CONTEXT_REFS & words)
+
 
 def _condense(question: str, session_id: str) -> str:
-    """Rewrite as standalone only when prior history exists."""
-    if not get_history(session_id):
+    """Rewrite as standalone only when prior history exists and needed."""
+    if not get_history(session_id) or not _needs_condensing(question):
         return question
     chain = CONDENSE_PROMPT | get_llm() | StrOutputParser()
     return chain.invoke({
@@ -37,14 +50,15 @@ def _scan_block(scan_context: str) -> str:
 
 def ask(question: str, session_id: str = "default", scan_context: str = "") -> dict:
     try:
-        standalone = _condense(question, session_id)
-        docs       = retrieve(standalone)
+        standalone    = _condense(question, session_id)
+        docs          = retrieve(standalone)
+        answer_prompt = get_answer_prompt(standalone)
 
         if not docs:
             update_history(session_id, question, _FALLBACK)
             return {"answer": _FALLBACK, "sources": [], "session_id": session_id}
 
-        chain  = ANSWER_PROMPT | get_llm() | StrOutputParser()
+        chain  = answer_prompt | get_llm() | StrOutputParser()
         answer = chain.invoke({
             "context":      format_docs(docs),
             "question":     standalone,
@@ -69,8 +83,9 @@ async def ask_stream(
     scan_context: str = "",
 ) -> AsyncGenerator[dict, None]:
     try:
-        standalone = await asyncio.to_thread(_condense, question, session_id)
-        docs       = await asyncio.to_thread(retrieve, standalone)
+        standalone    = await asyncio.to_thread(_condense, question, session_id)
+        docs          = await asyncio.to_thread(retrieve, standalone)
+        answer_prompt = get_answer_prompt(standalone)
 
         if not docs:
             yield {"type": "token",   "content": _FALLBACK}
@@ -81,7 +96,7 @@ async def ask_stream(
         sources     = extract_sources(docs)
         full_answer = ""
 
-        stream_chain = ANSWER_PROMPT | get_llm() | StrOutputParser()
+        stream_chain = answer_prompt | get_llm() | StrOutputParser()
         async for token in stream_chain.astream({
             "context":      format_docs(docs),
             "question":     standalone,

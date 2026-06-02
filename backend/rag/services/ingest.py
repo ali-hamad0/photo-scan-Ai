@@ -1,4 +1,5 @@
 import hashlib
+import logging
 import os
 import sys
 
@@ -10,6 +11,8 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from rag.config import DOCS_DIR, MAX_CHARS, MAX_CHUNKS, VECTOR_DIR
 from rag.services.embeddings import LocalEmbeddings
+
+logger = logging.getLogger(__name__)
 
 
 # ── Utilities ─────────────────────────────────────────────────────────────────
@@ -46,15 +49,15 @@ def load_pdfs() -> list[Document]:
         if not filename.endswith(".pdf"):
             continue
         path = os.path.join(DOCS_DIR, filename)
-        print(f"  PDF  {filename}")
+        logger.info("Loading PDF: %s", filename)
         try:
             pages = PyPDFLoader(path).load()
             for page in pages:
                 page.metadata.update({"source": filename, "doc_type": "pdf"})
             docs.extend(pages)
-            print(f"       {len(pages)} pages")
+            logger.info("  Loaded %d pages from %s", len(pages), filename)
         except Exception as exc:
-            print(f"       Skipped — {exc}")
+            logger.warning("  Skipped %s — %s", filename, exc)
     return docs
 
 
@@ -64,15 +67,15 @@ def load_csvs() -> list[Document]:
         if not filename.endswith(".csv"):
             continue
         path = os.path.join(DOCS_DIR, filename)
-        print(f"  CSV  {filename}")
+        logger.info("Loading CSV: %s", filename)
         try:
             df = pd.read_csv(path, encoding="utf-8", on_bad_lines="skip", nrows=3000)
             df.columns = [c.lower().strip() for c in df.columns]
             file_docs = _parse_csv(df, filename)
             docs.extend(file_docs)
-            print(f"       {len(file_docs)} documents")
+            logger.info("  Produced %d documents from %s", len(file_docs), filename)
         except Exception as exc:
-            print(f"       Skipped — {exc}")
+            logger.warning("  Skipped %s — %s", filename, exc)
     return docs
 
 
@@ -120,7 +123,7 @@ def deduplicate(docs: list[Document]) -> list[Document]:
             unique.append(doc)
     removed = len(docs) - len(unique)
     if removed:
-        print(f"  Removed {removed} duplicates")
+        logger.info("Removed %d duplicate chunks", removed)
     return unique
 
 
@@ -139,11 +142,11 @@ def split_documents(docs: list[Document]) -> list[Document]:
         for c in pdf_chunks:
             c.page_content = c.page_content[:MAX_CHARS]
         chunks.extend(pdf_chunks)
-        print(f"  PDF  {len(pdf_chunks)} chunks")
+        logger.info("PDF: %d chunks", len(pdf_chunks))
 
     if csv_docs:
         chunks.extend(csv_docs)
-        print(f"  CSV  {len(csv_docs)} chunks")
+        logger.info("CSV: %d chunks", len(csv_docs))
 
     return chunks
 
@@ -151,38 +154,37 @@ def split_documents(docs: list[Document]) -> list[Document]:
 # ── Main pipeline ─────────────────────────────────────────────────────────────
 
 def ingest(reset: bool = False) -> None:
-    print("=" * 50)
-    print("  PathoScan AI — Ingestion Pipeline")
-    print("=" * 50)
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(message)s")
+    logger.info("PathoScan AI — Ingestion Pipeline")
 
     if reset and os.path.exists(VECTOR_DIR):
         import shutil
         shutil.rmtree(VECTOR_DIR)
         os.makedirs(VECTOR_DIR)
-        print("  Vector store cleared\n")
+        logger.info("Vector store cleared")
 
-    print("\nLoading documents...")
+    logger.info("Loading documents from %s", DOCS_DIR)
     all_docs = load_pdfs() + load_csvs()
-    print(f"\n  Raw total: {len(all_docs)}")
+    logger.info("Raw total: %d documents", len(all_docs))
 
     if not all_docs:
-        print("No documents found.")
+        logger.warning("No documents found — aborting ingestion")
         return
 
     all_docs = deduplicate(all_docs)
 
-    print("\nSplitting...")
+    logger.info("Splitting documents...")
     chunks = split_documents(all_docs)
 
     for c in chunks:
         c.metadata["content_hash"] = _md5(c.page_content)
 
     if len(chunks) > MAX_CHUNKS:
-        print(f"  Capping at {MAX_CHUNKS} chunks (was {len(chunks)})")
+        logger.warning("Capping at %d chunks (was %d)", MAX_CHUNKS, len(chunks))
         chunks = chunks[:MAX_CHUNKS]
 
-    print(f"\n  Total chunks: {len(chunks)}")
-    print("\nGenerating embeddings (local model)...")
+    logger.info("Total chunks to embed: %d", len(chunks))
+    logger.info("Generating embeddings (local model)...")
 
     safe_chunks = [
         Document(page_content=c.page_content[:MAX_CHARS], metadata=c.metadata)
@@ -195,8 +197,7 @@ def ingest(reset: bool = False) -> None:
         persist_directory=VECTOR_DIR,
     )
 
-    print(f"\nVector DB ready — {len(safe_chunks)} chunks")
-    print(f"Location: {VECTOR_DIR}")
+    logger.info("Vector DB ready — %d chunks at %s", len(safe_chunks), VECTOR_DIR)
 
 
 if __name__ == "__main__":

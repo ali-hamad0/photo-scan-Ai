@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 import numpy as np
@@ -10,10 +11,18 @@ from config import ALGORITHM, RATE_LIMIT_ANALYZE, SECRET_KEY
 from database import Patient, Scan, ScanResult, get_db
 from limiter import limiter
 from scan_utils import format_patient_gender, get_db_scan_type, infer_analysis_type, normalize_patient_gender
-from services.analyzer import generate_gradcam, get_explanation, preprocess_image
+from services.analyzer import (
+    MIN_CONFIDENCE,
+    generate_gradcam,
+    get_explanation,
+    preprocess_image,
+    validate_scan_image,
+)
 
 router = APIRouter()
 models = {}
+
+logger = logging.getLogger(__name__)
 
 MODEL_PREPROCESS = {
     "chest_xray": "resnet",
@@ -52,9 +61,9 @@ def load_models():
     for name, path in model_paths.items():
         if os.path.exists(path):
             models[name] = tf.keras.models.load_model(path)
-            print(f"Loaded model: {name}")
+            logger.info("Loaded model: %s", name)
         else:
-            print(f"Model not found: {name} - skipping")
+            logger.warning("Model not found: %s — skipping", name)
 
 
 def get_user_id_from_token(request: Request) -> int:
@@ -224,6 +233,12 @@ async def analyze(
         raise HTTPException(status_code=400, detail="Patient name is required when saving patient info")
 
     contents = await file.read()
+
+    # --- Layer 1: grayscale check (rejects color photos / wrong modality) ---
+    is_valid, reason = validate_scan_image(contents, scan_type)
+    if not is_valid:
+        raise HTTPException(status_code=422, detail=reason)
+
     model_type = MODEL_PREPROCESS.get(scan_type, "resnet")
     img_array = preprocess_image(contents, model_type=model_type)
 
@@ -247,9 +262,30 @@ async def analyze(
         predicted_class = config["classes"][class_idx]
         cam_class_idx = class_idx
 
+    # --- Layer 2: confidence floor (rejects wrong-modality grayscale images) ---
+    min_conf = MIN_CONFIDENCE.get(scan_type, 0.60)
+    if confidence < min_conf:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                f"The model could not confidently analyse this image as a "
+                f"{scan_type.replace('_', ' ')} "
+                f"(confidence {confidence * 100:.1f}% < {min_conf * 100:.0f}% minimum). "
+                f"Please upload a valid {scan_type.replace('_', ' ')} scan."
+            ),
+        )
+
     confidence_pct = round(confidence * 100, 1)
     explanation = get_explanation(scan_type, predicted_class, confidence_pct)
-    heatmap_b64 = generate_gradcam(model, img_array, cam_class_idx, contents)
+
+    # Only generate Grad-CAM for abnormal predictions — on a Normal/negative result
+    # the heatmap would just amplify noise and mislead the reader.
+    _normal_classes = {"Normal", "not fractured", "No Tumor"}
+    heatmap_b64 = (
+        generate_gradcam(model, img_array, cam_class_idx, contents)
+        if predicted_class not in _normal_classes
+        else None
+    )
 
     patient = None
     if clean_patient_name:

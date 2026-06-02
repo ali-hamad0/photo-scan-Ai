@@ -205,10 +205,11 @@ def get_messages(session_id: str, request: Request, db: Session = Depends(get_db
 
 @router.post("/chat")
 async def chat(req: ChatRequest):
+    import asyncio
     try:
         from rag.agent import ask
 
-        result = ask(req.message, session_id=req.session_id)
+        result = await asyncio.to_thread(ask, req.message, session_id=req.session_id)
         return JSONResponse(
             content={
                 "answer": result["answer"],

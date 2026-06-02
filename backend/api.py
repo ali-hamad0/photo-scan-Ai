@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -13,13 +14,15 @@ from analyze import router as analyze_router, load_models
 from chat import router as chat_router
 from limiter import limiter
 
+logger = logging.getLogger(__name__)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_tables()
-    print("✅ Database tables created")
+    logger.info("Database tables created")
     load_models()
-    print("✅ Models loading complete")
+    logger.info("Models loading complete")
     yield
 
 

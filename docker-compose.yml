@@ -25,6 +25,9 @@ services:
       dockerfile: Dockerfile
     container_name: pathoscan_backend
     restart: unless-stopped
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     depends_on:
       db:
         condition: service_healthy
@@ -40,8 +43,12 @@ services:
       RATE_LIMIT_REGISTER: ${RATE_LIMIT_REGISTER:-3/minute}
       RATE_LIMIT_CHAT: ${RATE_LIMIT_CHAT:-20/minute}
     volumes:
+      # Mount source code so changes apply with docker restart, no rebuild needed
+      - ./backend:/app
       # Persist the Chroma vectorstore so it survives container restarts
       - ./backend/rag/vectorstore:/app/rag/vectorstore
+      # Persist the embedding model cache so it only downloads once
+      - hf_cache:/root/.cache
     ports:
       - "8000:8000"
     deploy:
@@ -63,3 +70,4 @@ services:
 
 volumes:
   db_data:
+  hf_cache:
